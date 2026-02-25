@@ -158,11 +158,14 @@ async def load_documents():
     """Load and embed documents on startup"""
     try:
         logger.info("Loading documents and generating embeddings...")
-        docs_path = Path("../docs.json")
+        # Try backend folder first (for Render), then parent folder (for local dev)
+        docs_path = Path("docs.json")
+        if not docs_path.exists():
+            docs_path = Path("../docs.json")
         
         if not docs_path.exists():
             logger.error(f"Documents file not found: {docs_path}")
-            raise FileNotFoundError(f"docs.json not found at {docs_path}")
+            raise FileNotFoundError(f"docs.json not found")
         
         with open(docs_path, "r", encoding="utf-8") as f:
             docs = json.load(f)
